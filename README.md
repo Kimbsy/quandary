@@ -25,4 +25,7 @@ If a player cannot move any pawns (because all possible moves have been blocked 
 
 The first player to have a pawn reach a space on the opposite egde wins the game.
 
+## Resources
+[Java 2D tutorial](http://zetcode.com/gfx/java2d/)
+
 [board]: https://github.com/Kimbsy/quandary-sim/blob/master/src/main/resources/IMG_20160917_155731.jpg?raw=true "This was the copy I played." 
