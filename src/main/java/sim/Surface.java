@@ -37,6 +37,7 @@ public class Surface extends JPanel implements ActionListener {
         sprites = new HashSet<Sprite>();
 
         QuandaryBoard board = new QuandaryBoard(new Point(0, 0), Sim.WIDTH, Sim.HEIGHT);
+        board.initSquares();
         sprites.add(board);
     }
 
@@ -45,7 +46,7 @@ public class Surface extends JPanel implements ActionListener {
 
         // Draw the Sprites.
         for (Sprite sprite : sprites) {
-            sprite.draw(g);
+            sprite.draw(g2d);
         }
     }
 

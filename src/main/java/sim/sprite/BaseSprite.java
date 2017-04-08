@@ -25,5 +25,5 @@ public abstract class BaseSprite implements Sprite {
         this.pos = pos;
     }
 
-    public abstract void draw(Graphics g);
+    public abstract void draw(Graphics2D g2d);
 }

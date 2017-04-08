@@ -15,7 +15,7 @@ public interface Sprite {
 
     /**
      * Draw the sprite.
-     * @param g The graphics object.
+     * @param g2d The graphics object.
      */
-    void draw(Graphics g);
+    void draw(Graphics2D g2d);
 }

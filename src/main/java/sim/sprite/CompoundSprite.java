@@ -30,15 +30,15 @@ public abstract class CompoundSprite extends BaseSprite {
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void draw(Graphics2D g2d) {
         // Draw self.
-        drawSelf(g);
+        drawSelf(g2d);
 
         // Draw children.
         for (Sprite child : children) {
-            child.draw(g);
+            child.draw(g2d);
         }
     }
 
-    abstract public void drawSelf(Graphics g);
+    abstract public void drawSelf(Graphics2D g);
 }
