@@ -57,14 +57,14 @@ public class QuandaryBoard extends CompoundSprite {
         return width / SIZE;
     }
 
-    private Point getSquarePosition(int i, int j) {
+    public Point getSquarePosition(int i, int j) {
         int x = width / SIZE * i;
         int y = height / SIZE * j;
 
         return new Point(x, y);
     }
 
-    private SquareColor getSquareColor(int i, int j) {
+    public SquareColor getSquareColor(int i, int j) {
         return QuandaryBoard.colors[i][j];
     }
 
