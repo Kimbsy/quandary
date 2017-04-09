@@ -7,14 +7,14 @@ import java.awt.*;
  */
 public enum SquareColor {
 
-    BLUE(Color.BLUE),
-    ORANGE(Color.ORANGE),
-    GREY(Color.LIGHT_GRAY),
-    PINK(Color.PINK),
-    YELLOW(Color.YELLOW),
-    PURPLE(Color.MAGENTA),
-    GREEN(Color.GREEN),
-    WHITE(Color.WHITE),
+    BLUE(new Color(20, 101, 154)),
+    ORANGE(new Color(177, 62, 31)),
+    GREY(new Color(117, 108, 103)),
+    PINK(new Color(180, 28, 85)),
+    YELLOW(new Color(204, 157 ,17)),
+    PURPLE(new Color(72, 34, 83)),
+    GREEN(new Color(20, 104, 54)),
+    WHITE(new Color(208, 191, 183)),
 
     ;
 

@@ -1,6 +1,7 @@
-package sim.sprite;
+package quandry;
 
 import quandry.SquareColor;
+import sim.sprite.BaseSprite;
 
 import java.awt.*;
 
@@ -36,6 +37,6 @@ public class Square extends BaseSprite {
 
     public void draw(Graphics2D g2d) {
         g2d.setColor(squareColor.getColor());
-        g2d.fillRect(getPos().x, getPos().y, getSize() - 5, getSize() - 5);
+        g2d.fillRect(getPos().x, getPos().y, getSize(), getSize());
     }
 }

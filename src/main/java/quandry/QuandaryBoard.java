@@ -2,7 +2,6 @@ package quandry;
 
 import sim.sprite.CompoundSprite;
 import sim.sprite.Sprite;
-import sim.sprite.Square;
 
 import java.awt.*;
 import java.util.HashSet;
@@ -14,6 +13,21 @@ import java.util.Set;
 public class QuandaryBoard extends CompoundSprite {
 
     private static final int SIZE = 12;
+
+    private static SquareColor[][] colors = new SquareColor[][] {
+            {SquareColor.BLUE, SquareColor.ORANGE, SquareColor.GREY, SquareColor.PINK, SquareColor.YELLOW, SquareColor.PURPLE, SquareColor.GREEN, SquareColor.WHITE, SquareColor.PINK, SquareColor.GREY, SquareColor.BLUE, SquareColor.GREEN},
+            {SquareColor.YELLOW, SquareColor.GREEN, SquareColor.WHITE, SquareColor.PURPLE, SquareColor.ORANGE, SquareColor.GREY, SquareColor.PINK, SquareColor.BLUE, SquareColor.PURPLE, SquareColor.ORANGE, SquareColor.WHITE, SquareColor.YELLOW},
+            {SquareColor.GREY, SquareColor.BLUE, SquareColor.PINK, SquareColor.YELLOW, SquareColor.GREEN, SquareColor.WHITE, SquareColor.PURPLE, SquareColor.GREY, SquareColor.YELLOW, SquareColor.PINK, SquareColor.GREEN, SquareColor.ORANGE},
+            {SquareColor.PURPLE, SquareColor.YELLOW, SquareColor.ORANGE, SquareColor.WHITE, SquareColor.BLUE, SquareColor.ORANGE, SquareColor.GREEN, SquareColor.PINK, SquareColor.WHITE, SquareColor.PURPLE, SquareColor.GREY, SquareColor.BLUE},
+            {SquareColor.WHITE, SquareColor.PINK, SquareColor.GREY, SquareColor.GREEN, SquareColor.PURPLE, SquareColor.GREY, SquareColor.BLUE, SquareColor.ORANGE, SquareColor.GREEN, SquareColor.BLUE, SquareColor.YELLOW, SquareColor.PURPLE},
+            {SquareColor.ORANGE, SquareColor.PURPLE, SquareColor.YELLOW, SquareColor.BLUE, SquareColor.PINK, SquareColor.GREEN, SquareColor.WHITE, SquareColor.YELLOW, SquareColor.GREY, SquareColor.WHITE, SquareColor.ORANGE, SquareColor.PINK},
+            {SquareColor.YELLOW, SquareColor.GREEN, SquareColor.ORANGE, SquareColor.GREY, SquareColor.YELLOW, SquareColor.PURPLE, SquareColor.PINK, SquareColor.BLUE, SquareColor.PURPLE, SquareColor.PINK, SquareColor.GREEN, SquareColor.WHITE},
+            {SquareColor.BLUE, SquareColor.WHITE, SquareColor.PINK, SquareColor.PURPLE, SquareColor.ORANGE, SquareColor.WHITE, SquareColor.GREY, SquareColor.GREEN, SquareColor.ORANGE, SquareColor.GREY, SquareColor.BLUE, SquareColor.YELLOW},
+            {SquareColor.GREY, SquareColor.YELLOW, SquareColor.BLUE, SquareColor.WHITE, SquareColor.GREY, SquareColor.PINK, SquareColor.BLUE, SquareColor.PURPLE, SquareColor.YELLOW, SquareColor.WHITE, SquareColor.PURPLE, SquareColor.PINK},
+            {SquareColor.PURPLE, SquareColor.PINK, SquareColor.GREEN, SquareColor.ORANGE, SquareColor.YELLOW, SquareColor.GREEN, SquareColor.ORANGE, SquareColor.WHITE, SquareColor.BLUE, SquareColor.GREEN, SquareColor.GREY, SquareColor.ORANGE},
+            {SquareColor.GREEN, SquareColor.GREY, SquareColor.WHITE, SquareColor.PINK, SquareColor.PURPLE, SquareColor.WHITE, SquareColor.GREY, SquareColor.YELLOW, SquareColor.PURPLE, SquareColor.ORANGE, SquareColor.PINK, SquareColor.GREEN},
+            {SquareColor.ORANGE, SquareColor.BLUE, SquareColor.PURPLE, SquareColor.YELLOW, SquareColor.ORANGE, SquareColor.BLUE, SquareColor.PINK, SquareColor.GREEN, SquareColor.WHITE, SquareColor.YELLOW, SquareColor.BLUE, SquareColor.GREY},
+    };
 
     private int width, height;
 
@@ -43,7 +57,7 @@ public class QuandaryBoard extends CompoundSprite {
     }
 
     private SquareColor getSquareColor(int i, int j) {
-        return SquareColor.BLUE;
+        return QuandaryBoard.colors[j][i];
     }
 
     public int getWidth() {
