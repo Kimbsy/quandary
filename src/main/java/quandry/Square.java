@@ -1,6 +1,5 @@
 package quandry;
 
-import quandry.SquareColor;
 import sim.sprite.BaseSprite;
 
 import java.awt.*;

@@ -1,6 +1,5 @@
 package sim;
 
-import quandry.QuandaryBoard;
 import sim.sprite.Sprite;
 
 import javax.swing.*;
@@ -13,15 +12,15 @@ import java.util.Set;
 /**
  * Created by kimbsy on 08/04/17.
  */
-public class Surface extends JPanel implements ActionListener {
+public abstract class Simulation extends JPanel implements ActionListener {
 
     private final int DELAY = 500;
     private Timer timer;
-    private Set<Sprite> sprites;
+    private Set<Sprite> sprites = new HashSet<Sprite>();
 
-    public Surface() {
+    public Simulation() {
         initTimer();
-        initSprites();
+        initSim();
     }
 
     private void initTimer() {
@@ -33,28 +32,29 @@ public class Surface extends JPanel implements ActionListener {
         return timer;
     }
 
-    private void initSprites() {
-        sprites = new HashSet<Sprite>();
+    abstract public void initSim();
+    abstract public void draw(Graphics2D g2d);
 
-        QuandaryBoard board = new QuandaryBoard(new Point(0, 0), Sim.WIDTH, Sim.HEIGHT);
-        board.initSquares();
-        board.initHighlights();
-        sprites.add(board);
+    public Set<Sprite> getSprites() {
+        return sprites;
     }
 
-    private void doDrawing(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
+    public void setSprites(Set<Sprite> sprites) {
+        this.sprites = sprites;
+    }
 
-        // Draw the Sprites.
-        for (Sprite sprite : sprites) {
-            sprite.draw(g2d);
-        }
+    public void addSprite(Sprite sprite) {
+        this.sprites.add(sprite);
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         doDrawing(g);
+    }
+
+    public void doDrawing(Graphics g) {
+        draw((Graphics2D) g);
     }
 
     public void actionPerformed(ActionEvent actionEvent) {

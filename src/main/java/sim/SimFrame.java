@@ -1,28 +1,30 @@
 package sim;
 
+import quandry.QuandaryGame;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class Sim extends JFrame {
+public class SimFrame extends JFrame {
 
-    public static final int WIDTH = 800;
-    public static final int HEIGHT = 800;
+    public static final int WIDTH = 1000;
+    public static final int HEIGHT = 1000;
 
-    public Sim() {
+    public SimFrame() {
         initUI();
     }
 
     public void initUI() {
 
-        final Surface surface = new Surface();
-        add(surface);
+        final Simulation quandaryGame = new QuandaryGame();
+        add(quandaryGame);
 
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                Timer timer = surface.getTimer();
+                Timer timer = quandaryGame.getTimer();
                 timer.stop();
             }
         });
@@ -36,7 +38,7 @@ public class Sim extends JFrame {
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Sim example = new Sim();
+                SimFrame example = new SimFrame();
                 example.setVisible(true);
             }
         });

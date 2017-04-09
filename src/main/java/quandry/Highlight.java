@@ -1,7 +1,6 @@
 package quandry;
 
 import sim.sprite.BaseSprite;
-import sim.sprite.Sprite;
 
 import java.awt.*;
 
