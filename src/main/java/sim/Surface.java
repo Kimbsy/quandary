@@ -38,6 +38,7 @@ public class Surface extends JPanel implements ActionListener {
 
         QuandaryBoard board = new QuandaryBoard(new Point(0, 0), Sim.WIDTH, Sim.HEIGHT);
         board.initSquares();
+        board.initHighlights();
         sprites.add(board);
     }
 
