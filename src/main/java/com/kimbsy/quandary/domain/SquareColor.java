@@ -1,9 +1,14 @@
-package quandry;
+package com.kimbsy.quandary.domain;
+
+import com.kimbsy.quandary.sprite.QuandaryBoard;
+import com.kimbsy.quandary.sprite.Square;
 
 import java.awt.*;
 
 /**
- * Created by kimbsy on 08/04/17.
+ * This enum lists the available colors of {@link Square}s on the {@link QuandaryBoard}.
+ *
+ * @author kimbsy
  */
 public enum SquareColor {
 
@@ -11,12 +16,10 @@ public enum SquareColor {
     ORANGE(new Color(177, 62, 31)),
     GREY(new Color(117, 108, 103)),
     PINK(new Color(180, 28, 85)),
-    YELLOW(new Color(204, 157 ,17)),
+    YELLOW(new Color(204, 157, 17)),
     PURPLE(new Color(72, 34, 83)),
     GREEN(new Color(20, 104, 54)),
-    WHITE(new Color(208, 191, 183)),
-
-    ;
+    WHITE(new Color(208, 191, 183));
 
     private Color color;
 
