@@ -5,7 +5,7 @@ import java.awt.*;
 /**
  * @author kimbsy
  */
-public enum PlayerColor {
+public enum Player {
 
     ONE(new Color(226, 169, 255), new Color(102, 78, 120)),
     TWO(new Color(155, 255, 200), new Color(74, 120, 93));
@@ -13,7 +13,7 @@ public enum PlayerColor {
     private Color primaryColor;
     private Color secondaryColor;
 
-    PlayerColor(Color primaryColor, Color secondaryColor) {
+    Player(Color primaryColor, Color secondaryColor) {
         this.primaryColor = primaryColor;
         this.secondaryColor = secondaryColor;
     }

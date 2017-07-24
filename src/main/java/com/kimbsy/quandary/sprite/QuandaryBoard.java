@@ -2,19 +2,18 @@ package com.kimbsy.quandary.sprite;
 
 import com.kimbsy.quandary.domain.ChildSpriteType;
 import com.kimbsy.quandary.domain.HighlightColor;
-import com.kimbsy.quandary.domain.PlayerColor;
+import com.kimbsy.quandary.domain.Player;
 import com.kimbsy.quandary.domain.SquareColor;
 import com.kimbsy.sim.sprite.CompoundSprite;
 import com.kimbsy.sim.sprite.Sprite;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import static com.kimbsy.quandary.domain.ChildSpriteType.HIGHLIGHT;
@@ -76,36 +75,29 @@ public class QuandaryBoard extends CompoundSprite<ChildSpriteType> {
     }
 
     private void initPawns() {
-
         List<Integer> positions = new ArrayList<Integer>();
 
         for (int i = 0; i < size; i++) {
             positions.add(i);
         }
 
-
         Collections.shuffle(positions);
         for (int i = 0; i < 4; i++) {
             Point coords1 = new Point(positions.get(i), 0);
-            Pawn p1 = new Pawn(getPosFromCoords(coords1), coords1, PlayerColor.ONE);
+            Pawn p1 = new Pawn(getPosFromCoords(coords1), coords1, Player.ONE);
             addChild(ChildSpriteType.PAWN, p1);
         }
 
         Collections.shuffle(positions);
         for (int i = 0; i < 4; i++) {
             Point coords2 = new Point(positions.get(i), size - 1);
-            Pawn p2 = new Pawn(getPosFromCoords(coords2), coords2, PlayerColor.TWO);
+            Pawn p2 = new Pawn(getPosFromCoords(coords2), coords2, Player.TWO);
             addChild(ChildSpriteType.PAWN, p2);
         }
-
     }
 
-    public int getSquareSize() {
-        return width / size;
-    }
-
-    public int getHighLightSize() {
-        return width / size;
+    public int getSize() {
+        return size;
     }
 
     public Point getCoordsFromPos(Point pos) {
@@ -114,13 +106,6 @@ public class QuandaryBoard extends CompoundSprite<ChildSpriteType> {
 
     public Point getPosFromCoords(Point coords) {
         return new Point((coords.x * width) / size, (coords.y * width) / size);
-    }
-
-    private Point getSquarePosition(int i, int j) {
-        int x = width / size * i;
-        int y = height / size * j;
-
-        return new Point(x, y);
     }
 
     @Override
@@ -135,6 +120,35 @@ public class QuandaryBoard extends CompoundSprite<ChildSpriteType> {
     @Override
     public void drawSelf(Graphics2D g2d) {
         g2d.setColor(Color.BLACK);
-        g2d.fillRect(100, 100, 100, 100);
+        g2d.fillRect(0, 0, width, height);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        QuandaryBoard that = (QuandaryBoard) o;
+
+        if (size != that.size) return false;
+        if (width != that.width) return false;
+        return height == that.height;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = size;
+        result = 31 * result + width;
+        result = 31 * result + height;
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("size", size)
+                .append("width", width)
+                .append("height", height)
+                .toString();
     }
 }
