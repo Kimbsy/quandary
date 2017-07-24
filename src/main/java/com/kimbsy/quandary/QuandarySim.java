@@ -91,7 +91,10 @@ public class QuandarySim extends BaseSim {
                 selectPawn(coords);
                 break;
             case SELECTING_MOVE:
-                movePawn(coords);
+                // If move failed, check if re-selecting,
+                if (!movePawn(coords)) {
+                    selectPawn(coords);
+                }
                 break;
             case MODAL:
                 chooseOption(mouseEvent.getPoint());
@@ -114,18 +117,26 @@ public class QuandarySim extends BaseSim {
         }
     }
 
-    private void movePawn(Point coords) {
+    private boolean movePawn(Point coords) {
+        boolean moved = false;
+
         if (availableMoves.contains(coords)) {
             selectedPawn.setCoords(coords);
             selectedPawn.setPos(quandaryBoard.getPosFromCoords(coords));
             checkVictory(coords);
             toggleTurn();
             checkMoveLock();
+            deselect();
+            moved = true;
         }
+
         if (!state.equals(State.MODAL)) {
             state = State.SELECTING_PAWN;
         }
+
         deselect();
+
+        return moved;
     }
 
     private void checkVictory(Point coords) {
