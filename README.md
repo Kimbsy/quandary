@@ -24,3 +24,8 @@ The colours are:
 If a player cannot move any pawns (because all possible moves have been blocked by other pawns) they end their turn without moving a pawn.
 
 The first player to have a pawn reach a space on the opposite edge wins the game.
+
+### TODO
+* don't deselect first if clicking on another pawn
+* figure out saving moves/state to file
+* start recording data from games (only output on completion)
