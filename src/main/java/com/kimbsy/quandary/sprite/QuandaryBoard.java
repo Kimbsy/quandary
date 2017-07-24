@@ -84,14 +84,14 @@ public class QuandaryBoard extends CompoundSprite<ChildSpriteType> {
         Collections.shuffle(positions);
         for (int i = 0; i < 4; i++) {
             Point coords1 = new Point(positions.get(i), 0);
-            Pawn p1 = new Pawn(getPosFromCoords(coords1), coords1, Player.ONE);
+            Pawn p1 = new Pawn(getPosFromCoords(coords1), width / size, coords1, Player.ONE);
             addChild(ChildSpriteType.PAWN, p1);
         }
 
         Collections.shuffle(positions);
         for (int i = 0; i < 4; i++) {
             Point coords2 = new Point(positions.get(i), size - 1);
-            Pawn p2 = new Pawn(getPosFromCoords(coords2), coords2, Player.TWO);
+            Pawn p2 = new Pawn(getPosFromCoords(coords2), width / size, coords2, Player.TWO);
             addChild(ChildSpriteType.PAWN, p2);
         }
     }

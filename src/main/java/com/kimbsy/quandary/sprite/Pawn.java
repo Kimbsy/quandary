@@ -12,10 +12,15 @@ import java.awt.*;
 public class Pawn extends BaseSprite {
 
     private final Player player;
+    private int squareSize;
+    private int width, height;
     private Point coords;
 
-    public Pawn(Point pos, Point coords, Player player) {
+    public Pawn(Point pos, int squareSize, Point coords, Player player) {
         super(pos);
+        this.squareSize = squareSize;
+        this.width = squareSize / 3;
+        this.height = squareSize / 3;
         this.coords = coords;
         this.player = player;
     }
@@ -35,11 +40,11 @@ public class Pawn extends BaseSprite {
     @Override
     public void draw(Graphics2D g2d) {
         g2d.setColor(player.getPrimaryColor());
-        g2d.fillRect(getPos().x + 10, getPos().y + 10, 10, 10);
+        g2d.fillOval(getPos().x + squareSize / 3, getPos().y + squareSize / 3, width, height);
 
         g2d.setColor(player.getSecondaryColor());
-        g2d.setStroke(new BasicStroke(2));
-        g2d.drawRect(getPos().x + 10, getPos().y + 10, 10, 10);
+        g2d.setStroke(new BasicStroke(1));
+        g2d.drawOval(getPos().x + squareSize / 3, getPos().y + squareSize / 3, width, height);
     }
 
     @Override
