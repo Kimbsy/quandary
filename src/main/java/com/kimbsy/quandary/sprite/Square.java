@@ -8,6 +8,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import java.awt.*;
 
 /**
+ * This class represents a single square on the board.
+ *
  * @author kimbsy
  */
 public class Square extends BaseSprite {
@@ -16,21 +18,44 @@ public class Square extends BaseSprite {
     private final int size;
     private final SquareColor squareColor;
 
-    public Square(Point pos, Point coords, int size, SquareColor squareColor) {
+    /**
+     * Class constructor specifying the position, board coordinates, size and color of the Square.
+     *
+     * @param pos         The position of the Square.
+     * @param coords      The board coordinates of the Square.
+     * @param size        the size of the Square.
+     * @param squareColor The color of the Square.
+     */
+    Square(Point pos, Point coords, int size, SquareColor squareColor) {
         super(pos);
         this.coords = coords;
         this.size = size;
         this.squareColor = squareColor;
     }
 
+    /**
+     * Get the board coordinates of the Square.
+     *
+     * @return the board coordinates of the Square.
+     */
     public Point getCoords() {
         return coords;
     }
 
+    /**
+     * Get the size of th Square.
+     *
+     * @return The size of the Square.
+     */
     private int getSize() {
         return size;
     }
 
+    /**
+     * Get the color of the Square.
+     *
+     * @return The color of the Square.
+     */
     public SquareColor getSquareColor() {
         return squareColor;
     }

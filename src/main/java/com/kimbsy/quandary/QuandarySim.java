@@ -16,11 +16,14 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
+ * This class facilitates the simulation of the board game Quandary.
+ *
  * @author kimbsy
  */
 public class QuandarySim extends BaseSim {
@@ -29,14 +32,12 @@ public class QuandarySim extends BaseSim {
         SELECTING_PAWN,
         SELECTING_MOVE,
         MODAL,
-        WINNER_DETERMINED,
     }
 
     private static final int SIZE = 12;
 
     private QuandaryBoard quandaryBoard;
-    private Player currentTurn;
-    private Player winner;
+    private Player currentPlayer;
     private Modal activeModal;
     private Modal skipTurn;
     private Modal displayWinner;
@@ -55,7 +56,7 @@ public class QuandarySim extends BaseSim {
                 getWidth() * 3 / 4,
                 150,
                 "You have no available moves",
-                new ArrayList<String>(Arrays.asList("skip turn"))
+                new ArrayList<String>(Collections.singletonList("skip turn"))
         );
         skipTurn.setVisible(false);
         displayWinner = new Modal(
@@ -74,7 +75,7 @@ public class QuandarySim extends BaseSim {
         sprites.add(displayWinner);
 
         // Set state.
-        currentTurn = Player.ONE;
+        currentPlayer = Player.ONE;
         visibleHighlights = new ArrayList<Highlight>();
         availableMoves = new ArrayList<Point>();
         state = State.SELECTING_PAWN;
@@ -97,16 +98,20 @@ public class QuandarySim extends BaseSim {
                 }
                 break;
             case MODAL:
-                chooseOption(mouseEvent.getPoint());
-            case WINNER_DETERMINED:
+                handleModal(mouseEvent.getPoint());
         }
     }
 
+    /**
+     * Attempt to select a {@link Pawn} on the board at a set of board coordinates.
+     *
+     * @param coords The board coordinates of the potential {@link Pawn}.
+     */
     private void selectPawn(Point coords) {
         Pawn pawn = getPawnAtCoords(coords);
 
         // Highlight moves or deselect.
-        if (pawn != null && pawn.getPlayer().equals(currentTurn)) {
+        if (pawn != null && pawn.getPlayer().equals(currentPlayer)) {
             selectedPawn = pawn;
             resetHighlights();
             highlightSelectedPawn();
@@ -117,6 +122,12 @@ public class QuandarySim extends BaseSim {
         }
     }
 
+    /**
+     * Attempt to move the currently selected {@link Pawn} to the specified set of board coordinates.
+     *
+     * @param coords The board coordinates to move to.
+     * @return True if the {@link Pawn} was successfully moved.
+     */
     private boolean movePawn(Point coords) {
         boolean moved = false;
 
@@ -139,16 +150,21 @@ public class QuandarySim extends BaseSim {
         return moved;
     }
 
+    /**
+     * Check if either {@link Player} has managed to get a {@link Pawn} to the opposite side of the board.
+     * <p>
+     * If so, activate the DIPLAY_WINNER {@link Modal}.
+     *
+     * @param coords The board coordinates of the most recently moved {@link Pawn}.
+     */
     private void checkVictory(Point coords) {
-        if (currentTurn.equals(Player.ONE) && coords.y == quandaryBoard.getSize() - 1) {
-            winner = Player.ONE;
+        if (currentPlayer.equals(Player.ONE) && coords.y == quandaryBoard.getSize() - 1) {
             displayWinner.setBodyText(Player.ONE.getName() + " Wins!");
             displayWinner.setVisible(true);
             activeModal = displayWinner;
             state = State.MODAL;
         }
-        if (currentTurn.equals(Player.TWO) && coords.y == 0) {
-            winner = Player.TWO;
+        if (currentPlayer.equals(Player.TWO) && coords.y == 0) {
             displayWinner.setBodyText(Player.TWO.getName() + " Wins!");
             displayWinner.setVisible(true);
             activeModal = displayWinner;
@@ -156,9 +172,14 @@ public class QuandarySim extends BaseSim {
         }
     }
 
+    /**
+     * Determine if the current {@link Player} has no legal moves.
+     * <p>
+     * If so, display the SKIP_TURN {@link Modal}.
+     */
     private void checkMoveLock() {
 
-        int direction = getDirection(currentTurn);
+        int direction = getDirection(currentPlayer);
 
         Set<Sprite> sprites = quandaryBoard.getChildren().get(ChildSpriteType.PAWN);
 
@@ -167,7 +188,7 @@ public class QuandarySim extends BaseSim {
         if (sprites != null && !sprites.isEmpty()) {
             for (Sprite s : sprites) {
                 Pawn pawn = (Pawn) s;
-                if (pawn.getPlayer().equals(currentTurn)) {
+                if (pawn.getPlayer().equals(currentPlayer)) {
 
                     Point coords = pawn.getCoords();
 
@@ -193,19 +214,29 @@ public class QuandarySim extends BaseSim {
         }
     }
 
-    private void chooseOption(Point coords) {
+    /**
+     * Determine which {@link Modal} handler method to use.
+     *
+     * @param pos The position of the mouse click event.
+     */
+    private void handleModal(Point pos) {
         switch (activeModal.getModalType()) {
             case SKIP_TURN:
-                handleSkipTurnModal(coords);
+                handleSkipTurnModal(pos);
                 break;
             case DISPLAY_WINNER:
-                handleDisplayWinnerModal(coords);
+                handleDisplayWinnerModal(pos);
                 break;
         }
     }
 
-    private void handleSkipTurnModal(Point coords) {
-        switch (activeModal.getChoice(coords)) {
+    /**
+     * Handle a click on the SKIP_TURN {@link Modal}.
+     *
+     * @param pos The position of the mouse click event.
+     */
+    private void handleSkipTurnModal(Point pos) {
+        switch (activeModal.getChoice(pos)) {
             case 0:
                 skipTurn();
                 break;
@@ -215,6 +246,9 @@ public class QuandarySim extends BaseSim {
         }
     }
 
+    /**
+     * Skip the current {@link Player}s turn and deactivate the SKIP_TURN {@link Modal}.
+     */
     private void skipTurn() {
         activeModal = null;
         skipTurn.setVisible(false);
@@ -224,8 +258,13 @@ public class QuandarySim extends BaseSim {
         deselect();
     }
 
-    private void handleDisplayWinnerModal(Point coords) {
-        switch (activeModal.getChoice(coords)) {
+    /**
+     * Handle a click on the DISPLAY_WINNER {@link Modal}.
+     *
+     * @param pos The position of the mouse click event.
+     */
+    private void handleDisplayWinnerModal(Point pos) {
+        switch (activeModal.getChoice(pos)) {
             case 0:
                 newGame();
                 break;
@@ -238,6 +277,9 @@ public class QuandarySim extends BaseSim {
         }
     }
 
+    /**
+     * Start a new game and deactivate the DISPLAY_WINNER {@link Modal}.
+     */
     private void newGame() {
         activeModal = null;
         displayWinner.setVisible(false);
@@ -245,35 +287,54 @@ public class QuandarySim extends BaseSim {
         initSim();
     }
 
+    /**
+     * Quit the simulation.
+     */
     private void quit() {
         System.exit(0);
     }
 
+    /**
+     * Show the {@link Highlight} {@link Sprite}s at board coordinates corresponding to the current {@link Player}s
+     * {@link Pawn}s.
+     */
     private void highlightAvailablePawns() {
         Set<Sprite> sprites = quandaryBoard.getChildren().get(ChildSpriteType.PAWN);
 
         if (sprites != null && !sprites.isEmpty()) {
             for (Sprite s : sprites) {
                 Pawn pawn = (Pawn) s;
-                if (pawn.getPlayer().equals(currentTurn)) {
+                if (pawn.getPlayer().equals(currentPlayer)) {
                     Highlight highlight = getHighlightAtCoords(pawn.getCoords());
-                    highlight.setVisible(true);
-                    highlight.setHighlightColor(HighlightColor.LIGHT);
-                    visibleHighlights.add(highlight);
+                    if (highlight != null) {
+                        highlight.setVisible(true);
+                        highlight.setHighlightColor(HighlightColor.LIGHT);
+                        visibleHighlights.add(highlight);
+                    }
                 }
             }
         }
     }
 
+    /**
+     * Show the {@link Highlight} {@link Sprite}s at board coordinates corresponding to the currently selected {@link
+     * Pawn}.
+     */
     private void highlightSelectedPawn() {
         Highlight highlight = getHighlightAtCoords(selectedPawn.getCoords());
-        highlight.setVisible(true);
-        highlight.setHighlightColor(HighlightColor.LIGHT);
-        visibleHighlights.add(highlight);
+        if (highlight != null) {
+            highlight.setVisible(true);
+            highlight.setHighlightColor(HighlightColor.LIGHT);
+            visibleHighlights.add(highlight);
+        }
     }
 
+    /**
+     * Show the appropriately colored {@link Highlight} {@link Sprite}s corresponding the coordinates of the moves
+     * available to the currently selected {@link Pawn}.
+     */
     private void highlightMoves() {
-        int direction = getDirection(currentTurn);
+        int direction = getDirection(currentPlayer);
         Point coords = selectedPawn.getCoords();
 
         for (int i = -1; i < 2; i++) {
@@ -283,19 +344,24 @@ public class QuandarySim extends BaseSim {
 
             if (square != null) {
                 Highlight highlight = getHighlightAtCoords(moveCoords);
-                highlight.setVisible(true);
-                visibleHighlights.add(highlight);
+                if (highlight != null) {
+                    highlight.setVisible(true);
+                    visibleHighlights.add(highlight);
 
-                if (isLegal(square)) {
-                    highlight.setHighlightColor(HighlightColor.LIGHT);
-                    availableMoves.add(highlight.getCoords());
-                } else {
-                    highlight.setHighlightColor(HighlightColor.DARK);
+                    if (isLegal(square)) {
+                        highlight.setHighlightColor(HighlightColor.LIGHT);
+                        availableMoves.add(highlight.getCoords());
+                    } else {
+                        highlight.setHighlightColor(HighlightColor.DARK);
+                    }
                 }
             }
         }
     }
 
+    /**
+     * Deselect the currently selected {@link Pawn}.
+     */
     private void deselect() {
         selectedPawn = null;
         resetHighlights();
@@ -303,10 +369,20 @@ public class QuandarySim extends BaseSim {
         highlightAvailablePawns();
     }
 
+    /**
+     * Determine the appropriate integer to add to a y coordinate to indicate the row "in front" of another row from the
+     * specified {@link Player}s perspective.
+     *
+     * @param player The {@link Player}.
+     * @return The required integer.
+     */
     private int getDirection(Player player) {
         return player.equals(Player.ONE) ? 1 : -1;
     }
 
+    /**
+     * Stop showing all visible {@link Highlight} {@link Sprite}s.
+     */
     private void resetHighlights() {
         for (Highlight highlight : visibleHighlights) {
             highlight.setVisible(false);
@@ -314,6 +390,13 @@ public class QuandarySim extends BaseSim {
         visibleHighlights = new ArrayList<Highlight>();
     }
 
+    /**
+     * Determine if a {@link Square} is a legal move for the current {@link Player} based on the colors being blocked by
+     * the non active {@link Player}'s {@link Pawn}s.
+     *
+     * @param square The square to check.
+     * @return True if the move is allowed.
+     */
     private boolean isLegal(Square square) {
         if (getPawnAtCoords(square.getCoords()) != null) {
             return false;
@@ -325,10 +408,13 @@ public class QuandarySim extends BaseSim {
         if (sprites != null && !sprites.isEmpty()) {
             for (Sprite s : sprites) {
                 Pawn pawn = (Pawn) s;
-                if (!pawn.getPlayer().equals(currentTurn)) {
-                    int direction = -1 * getDirection(currentTurn);
-                    Point inFront = new Point(pawn.getCoords().x, pawn.getCoords().y + direction);
-                    blockedColors.add(getSquareAtCoords(inFront).getSquareColor());
+                if (!pawn.getPlayer().equals(currentPlayer)) {
+                    int direction = -1 * getDirection(currentPlayer);
+                    Point inFront = new Point(pawn.getCoords().x, pawn.getCoords().y + direction % quandaryBoard.getSize() - 1);
+                    Square inFrontSquare = getSquareAtCoords(inFront);
+                    if (inFrontSquare != null) {
+                        blockedColors.add(inFrontSquare.getSquareColor());
+                    }
                 }
             }
         }
@@ -336,15 +422,24 @@ public class QuandarySim extends BaseSim {
         return !blockedColors.contains(square.getSquareColor());
     }
 
+    /**
+     * Switch from one {@link Player}'s turn to the next.
+     */
     private void toggleTurn() {
-        if (currentTurn.equals(Player.ONE)) {
-            currentTurn = Player.TWO;
+        if (currentPlayer.equals(Player.ONE)) {
+            currentPlayer = Player.TWO;
         } else {
-            currentTurn = Player.ONE;
+            currentPlayer = Player.ONE;
         }
     }
 
-    public Square getSquareAtCoords(Point targetCoords) {
+    /**
+     * Get the {@link Square} {@link Sprite} at the corresponding board coordinates.
+     *
+     * @param targetCoords The board coordinates.
+     * @return The {@link Square} object at those coordinates or null if none found.
+     */
+    private Square getSquareAtCoords(Point targetCoords) {
         Set<Sprite> sprites = quandaryBoard.getChildren().get(ChildSpriteType.SQUARE);
 
         if (sprites != null && !sprites.isEmpty()) {
@@ -359,7 +454,13 @@ public class QuandarySim extends BaseSim {
         return null;
     }
 
-    public Highlight getHighlightAtCoords(Point targetCoords) {
+    /**
+     * Get the {@link Highlight} {@link Sprite} at the corresponding board coordinates.
+     *
+     * @param targetCoords The board coordinates.
+     * @return The {@link Highlight} object at those coordinates or null if none found.
+     */
+    private Highlight getHighlightAtCoords(Point targetCoords) {
         Set<Sprite> sprites = quandaryBoard.getChildren().get(ChildSpriteType.HIGHLIGHT);
 
         if (sprites != null && !sprites.isEmpty()) {
@@ -374,7 +475,13 @@ public class QuandarySim extends BaseSim {
         return null;
     }
 
-    public Pawn getPawnAtCoords(Point targetCoords) {
+    /**
+     * Get the {@link Pawn} {@link Sprite} at the corresponding board coordinates.
+     *
+     * @param targetCoords The board coordinates.
+     * @return The {@link Pawn} object at those coordinates or null if none found.
+     */
+    private Pawn getPawnAtCoords(Point targetCoords) {
         Set<Sprite> sprites = quandaryBoard.getChildren().get(ChildSpriteType.PAWN);
 
         if (sprites != null && !sprites.isEmpty()) {

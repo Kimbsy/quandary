@@ -1,15 +1,21 @@
 package com.kimbsy.quandary.sprite;
 
 import com.kimbsy.sim.sprite.BaseSprite;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.awt.*;
 import java.util.ArrayList;
 
 /**
+ * This class displays a message box overlay on top of the board with options to click on.
+ *
  * @author kimbsy
  */
 public class Modal extends BaseSprite {
 
+    /**
+     * The different types of Modal.
+     */
     public enum ModalType {
         SKIP_TURN,
         DISPLAY_WINNER,
@@ -23,6 +29,16 @@ public class Modal extends BaseSprite {
     private String bodyText;
     private ArrayList<String> options;
 
+    /**
+     * Class constructor specifying the Modal type, position, dimensions, body text and list of option button strings.
+     *
+     * @param modalType The type of the Modal.
+     * @param pos       The position of the Modal.
+     * @param width     The width of the Modal frame.
+     * @param height    The height of the Modal frame.
+     * @param bodyText  The text displayed in the Modal body.
+     * @param options   The list of Strings displayed in the Modal option buttons.
+     */
     public Modal(ModalType modalType, Point pos, int width, int height, String bodyText, ArrayList<String> options) {
         super(pos);
         this.modalType = modalType;
@@ -32,14 +48,25 @@ public class Modal extends BaseSprite {
         this.options = options;
     }
 
+    /**
+     * Get the type of the Modal.
+     *
+     * @return The Modal type.
+     */
     public ModalType getModalType() {
         return modalType;
     }
 
+    /**
+     * Set the body text of the Modal.
+     *
+     * @param bodyText The new body text.
+     */
     public void setBodyText(String bodyText) {
         this.bodyText = bodyText;
     }
 
+    @Override
     public void draw(Graphics2D g2d) {
         g2d.setColor(Color.DARK_GRAY);
         g2d.fillRect(getPos().x + 3, getPos().y + 3, width, height);
@@ -75,6 +102,12 @@ public class Modal extends BaseSprite {
         }
     }
 
+    /**
+     * Determine which option button was clicked on.
+     *
+     * @param pos The position of the mouse click event.
+     * @return The index of the option selected.
+     */
     public int getChoice(Point pos) {
         int buttonCount = options.size();
         int buttonWidth = width / buttonCount - 30;
@@ -91,5 +124,40 @@ public class Modal extends BaseSprite {
         }
 
         return -1;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Modal modal = (Modal) o;
+
+        if (width != modal.width) return false;
+        if (height != modal.height) return false;
+        if (modalType != modal.modalType) return false;
+        if (bodyText != null ? !bodyText.equals(modal.bodyText) : modal.bodyText != null) return false;
+        return options != null ? options.equals(modal.options) : modal.options == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = modalType != null ? modalType.hashCode() : 0;
+        result = 31 * result + width;
+        result = 31 * result + height;
+        result = 31 * result + (bodyText != null ? bodyText.hashCode() : 0);
+        result = 31 * result + (options != null ? options.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("modalType", modalType)
+                .append("width", width)
+                .append("height", height)
+                .append("bodyText", bodyText)
+                .append("options", options)
+                .toString();
     }
 }

@@ -3,6 +3,8 @@ package com.kimbsy.quandary;
 import com.kimbsy.sim.Sim;
 
 /**
+ * This class instantiates, initializes and runs a simulation of the board game Quandary.
+ *
  * @author kimbsy
  */
 public class QuandaryApp {

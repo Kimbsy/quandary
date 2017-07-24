@@ -3,6 +3,7 @@ package com.kimbsy.quandary.sprite;
 import com.kimbsy.quandary.domain.HighlightColor;
 import com.kimbsy.sim.sprite.BaseSprite;
 import com.kimbsy.sim.sprite.Sprite;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.awt.*;
 
@@ -17,25 +18,45 @@ public class Highlight extends BaseSprite {
     private final int size;
     private HighlightColor highlightColor;
 
-    public Highlight(Point pos, Point coords, int size, HighlightColor highlightColor) {
+    /**
+     * Class constructor specifying the position, coordinates and color of the Highlight along with the size of the
+     * {@link Square} it is highlighting.
+     *
+     * @param pos            The position of the Highlight.
+     * @param coords         The board coordinates of the Highlight.
+     * @param highlightColor The color of the highlight.
+     * @param size           The size of the highlighted square.
+     */
+    Highlight(Point pos, Point coords, HighlightColor highlightColor, int size) {
         super(pos);
         this.coords = coords;
-        this.size = size - 4;
         this.highlightColor = highlightColor;
+        this.size = size - 4;
     }
 
+    /**
+     * Get the coordinates of the Highlight.
+     *
+     * @return The board coordinates.
+     */
     public Point getCoords() {
         return coords;
     }
 
+    /**
+     * Set the color of the Highlight.
+     *
+     * @param highlightColor The new Hilight color.
+     */
     public void setHighlightColor(HighlightColor highlightColor) {
         this.highlightColor = highlightColor;
     }
 
-    public HighlightColor getHighlightColor() {
-        return highlightColor;
-    }
-
+    /**
+     * Get the size of the Highlight {@link Sprite}.
+     *
+     * @return The size of the Highlight.
+     */
     private int getSize() {
         return size;
     }
@@ -69,7 +90,7 @@ public class Highlight extends BaseSprite {
 
     @Override
     public String toString() {
-        return new org.apache.commons.lang3.builder.ToStringBuilder(this)
+        return new ToStringBuilder(this)
                 .append("coords", coords)
                 .append("size", size)
                 .append("highlightColor", highlightColor)

@@ -3,6 +3,8 @@ package com.kimbsy.quandary.domain;
 import java.awt.*;
 
 /**
+ * This enum lists the players in the game along with their display name and pawn color choices.
+ *
  * @author kimbsy
  */
 public enum Player {

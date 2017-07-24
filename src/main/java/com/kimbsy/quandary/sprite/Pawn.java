@@ -7,32 +7,58 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import java.awt.*;
 
 /**
+ * This class represents one of a {@link Player}s four pawns.
+ *
  * @author kimbsy
  */
 public class Pawn extends BaseSprite {
 
-    private final Player player;
-    private int squareSize;
-    private int width, height;
     private Point coords;
+    private final Player player;
+    private int width, height;
+    private final int squareSize;
 
-    public Pawn(Point pos, int squareSize, Point coords, Player player) {
+    /**
+     * Class constructor specifying the position and board coordinates of the Pawn along with the {@link Player} it
+     * belongs to and the size of the squares it will be drawn in.
+     *
+     * @param pos        The position of the Pawn.
+     * @param coords     The board coordinates of the Pawn.
+     * @param player     The owning {@link Player}.
+     * @param squareSize The size of the squares the Pawn will be displayed in.
+     */
+    Pawn(Point pos, Point coords, Player player, int squareSize) {
         super(pos);
-        this.squareSize = squareSize;
+        this.player = player;
+        this.coords = coords;
         this.width = squareSize / 3;
         this.height = squareSize / 3;
-        this.coords = coords;
-        this.player = player;
+        this.squareSize = squareSize;
     }
 
+    /**
+     * Set the board coordinates of the Pawn.
+     *
+     * @param coords The board coordinates.
+     */
     public void setCoords(Point coords) {
         this.coords = coords;
     }
 
+    /**
+     * Get the board coordinates of the Pawn.
+     *
+     * @return The board coordinates.
+     */
     public Point getCoords() {
         return coords;
     }
 
+    /**
+     * Get the {@link Player} this Pawn belongs to.
+     *
+     * @return The owning {@link Player}.
+     */
     public Player getPlayer() {
         return player;
     }
@@ -54,6 +80,9 @@ public class Pawn extends BaseSprite {
 
         Pawn pawn = (Pawn) o;
 
+        if (squareSize != pawn.squareSize) return false;
+        if (width != pawn.width) return false;
+        if (height != pawn.height) return false;
         if (player != pawn.player) return false;
         return coords != null ? coords.equals(pawn.coords) : pawn.coords == null;
     }
@@ -61,6 +90,9 @@ public class Pawn extends BaseSprite {
     @Override
     public int hashCode() {
         int result = player != null ? player.hashCode() : 0;
+        result = 31 * result + squareSize;
+        result = 31 * result + width;
+        result = 31 * result + height;
         result = 31 * result + (coords != null ? coords.hashCode() : 0);
         return result;
     }
@@ -69,6 +101,9 @@ public class Pawn extends BaseSprite {
     public String toString() {
         return new ToStringBuilder(this)
                 .append("player", player)
+                .append("squareSize", squareSize)
+                .append("width", width)
+                .append("height", height)
                 .append("coords", coords)
                 .toString();
     }
