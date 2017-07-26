@@ -9,7 +9,7 @@ I found a copy of the 1970 board game Quandary when I was on holiday. It's a gam
 Players sit opposite one another and each control four pawns. The pawns are initially placed randomly (determined by a deck of numbered cards) along the numbered edges closest to the players.
 Only one pawn can occupy a space at any one time.
 
-Players take turns to move one of their pawns one space forward (either straight forward or diagonally), pawns can only into a square if an opponent pawn has a square of the same colour in front of it.
+Players take turns to move one of their pawns one space forward (either straight forward or diagonally), pawns can only move into a square if an opponent pawn has a square of the same colour in front of it.
 
 The colours are:
 * BLUE
