@@ -391,7 +391,7 @@ public class QuandarySim extends BaseSim {
     }
 
     /**
-     * Determine if a {@link Square} is a legal move for the current {@link Player} based on the colors being blocked by
+     * Determine if a {@link Square} is a legal move for the current {@link Player} based on the colors being allowed by
      * the non active {@link Player}'s {@link Pawn}s.
      *
      * @param square The square to check.
@@ -403,23 +403,23 @@ public class QuandarySim extends BaseSim {
         }
 
         Set<Sprite> sprites = quandaryBoard.getChildren().get(ChildSpriteType.PAWN);
-        Set<SquareColor> blockedColors = new HashSet<SquareColor>();
+        Set<SquareColor> allowedColors = new HashSet<SquareColor>();
 
         if (sprites != null && !sprites.isEmpty()) {
             for (Sprite s : sprites) {
                 Pawn pawn = (Pawn) s;
                 if (!pawn.getPlayer().equals(currentPlayer)) {
                     int direction = -1 * getDirection(currentPlayer);
-                    Point inFront = new Point(pawn.getCoords().x, pawn.getCoords().y + direction % quandaryBoard.getSize() - 1);
+                    Point inFront = new Point(pawn.getCoords().x, pawn.getCoords().y + direction % (quandaryBoard.getSize() - 1));
                     Square inFrontSquare = getSquareAtCoords(inFront);
                     if (inFrontSquare != null) {
-                        blockedColors.add(inFrontSquare.getSquareColor());
+                        allowedColors.add(inFrontSquare.getSquareColor());
                     }
                 }
             }
         }
 
-        return !blockedColors.contains(square.getSquareColor());
+        return allowedColors.contains(square.getSquareColor());
     }
 
     /**
