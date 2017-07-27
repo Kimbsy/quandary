@@ -21,10 +21,6 @@ The colours are:
 * GREEN
 * WHITE
 
-If a player cannot move any pawns (because there are no moves allowed by opposing pawns) they end their turn without moving a pawn.
+If a player cannot move any pawns (because there are no moves allowed by opposing pawns) they end their turn without moving a pawn. If neither player can move a pawn the game ends in a draw.
 
 The first player to have a pawn reach a space on the opposite edge wins the game.
-
-### TODO
-* figure out saving moves/state to file
-* start recording data from games (only output on completion)

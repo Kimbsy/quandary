@@ -18,7 +18,7 @@ public class Modal extends BaseSprite {
      */
     public enum ModalType {
         SKIP_TURN,
-        DISPLAY_WINNER,
+        END_GAME,
     }
 
     private static final Font FONT = new Font("Courier", Font.BOLD, 15);

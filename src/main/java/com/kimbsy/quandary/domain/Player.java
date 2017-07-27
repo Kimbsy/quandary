@@ -9,17 +9,23 @@ import java.awt.*;
  */
 public enum Player {
 
-    ONE("Player 1", new Color(226, 169, 255), new Color(102, 78, 120)),
-    TWO("Player 2", new Color(155, 255, 200), new Color(74, 120, 93));
+    ONE(1, "Player 1", new Color(226, 169, 255), new Color(102, 78, 120)),
+    TWO(2, "Player 2", new Color(155, 255, 200), new Color(74, 120, 93));
 
+    private int id;
     private String name;
     private Color primaryColor;
     private Color secondaryColor;
 
-    Player(String name, Color primaryColor, Color secondaryColor) {
+    Player(int id, String name, Color primaryColor, Color secondaryColor) {
+        this.id = id;
         this.name = name;
         this.primaryColor = primaryColor;
         this.secondaryColor = secondaryColor;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {

@@ -39,7 +39,7 @@ public class QuandaryBoard extends CompoundSprite<ChildSpriteType> {
      * @param height The height of the board.
      */
     public QuandaryBoard(int size, int width, int height) {
-        super(new Point(0, 0), new HashMap<ChildSpriteType, Set<Sprite>>());
+        super(new Point(0, 0), new HashMap<>());
         this.size = size;
         this.width = width;
         this.height = height;
@@ -95,7 +95,7 @@ public class QuandaryBoard extends CompoundSprite<ChildSpriteType> {
      * Initialize the {@link Pawn} {@link Sprite}s used in the {@link Sim}.
      */
     private void initPawns() {
-        List<Integer> positions = new ArrayList<Integer>();
+        List<Integer> positions = new ArrayList<>();
 
         for (int i = 0; i < size; i++) {
             positions.add(i);
@@ -147,7 +147,7 @@ public class QuandaryBoard extends CompoundSprite<ChildSpriteType> {
 
     @Override
     public LinkedHashSet<ChildSpriteType> getKeyOrder() {
-        LinkedHashSet<ChildSpriteType> order = new LinkedHashSet<ChildSpriteType>();
+        LinkedHashSet<ChildSpriteType> order = new LinkedHashSet<>();
         order.add(SQUARE);
         order.add(HIGHLIGHT);
         order.add(PAWN);

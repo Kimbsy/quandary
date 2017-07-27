@@ -4,6 +4,7 @@ import com.kimbsy.quandary.domain.ChildSpriteType;
 import com.kimbsy.quandary.domain.HighlightColor;
 import com.kimbsy.quandary.domain.Player;
 import com.kimbsy.quandary.domain.SquareColor;
+import com.kimbsy.quandary.recording.GameRecorder;
 import com.kimbsy.quandary.sprite.Modal;
 import com.kimbsy.quandary.sprite.Highlight;
 import com.kimbsy.quandary.sprite.Pawn;
@@ -40,11 +41,13 @@ public class QuandarySim extends BaseSim {
     private Player currentPlayer;
     private Modal activeModal;
     private Modal skipTurn;
-    private Modal displayWinner;
+    private Modal endGame;
     private Pawn selectedPawn;
     private ArrayList<Highlight> visibleHighlights;
     private ArrayList<Point> availableMoves;
     private State state;
+    private boolean possibleDraw;
+    private GameRecorder gameRecorder;
 
     @Override
     public void initSim() {
@@ -56,29 +59,31 @@ public class QuandarySim extends BaseSim {
                 getWidth() * 3 / 4,
                 150,
                 "You have no available moves",
-                new ArrayList<String>(Collections.singletonList("skip turn"))
+                new ArrayList<>(Collections.singletonList("skip turn"))
         );
         skipTurn.setVisible(false);
-        displayWinner = new Modal(
-                Modal.ModalType.DISPLAY_WINNER,
+        endGame = new Modal(
+                Modal.ModalType.END_GAME,
                 new Point(getWidth() / 8, 100),
                 getWidth() * 3 / 4,
                 150,
                 "A winner is you!",
-                new ArrayList<String>(Arrays.asList("new game", "quit"))
+                new ArrayList<>(Arrays.asList("new game", "quit"))
         );
-        displayWinner.setVisible(false);
+        endGame.setVisible(false);
 
-        Set<Sprite> sprites = new LinkedHashSet<Sprite>();
+        Set<Sprite> sprites = new LinkedHashSet<>();
         sprites.add(quandaryBoard);
         sprites.add(skipTurn);
-        sprites.add(displayWinner);
+        sprites.add(endGame);
 
         // Set state.
         currentPlayer = Player.ONE;
-        visibleHighlights = new ArrayList<Highlight>();
-        availableMoves = new ArrayList<Point>();
+        visibleHighlights = new ArrayList<>();
+        availableMoves = new ArrayList<>();
         state = State.SELECTING_PAWN;
+        possibleDraw = false;
+        gameRecorder = new GameRecorder(this);
         highlightAvailablePawns();
         setSprites(sprites);
     }
@@ -100,6 +105,33 @@ public class QuandarySim extends BaseSim {
             case MODAL:
                 handleModal(mouseEvent.getPoint());
         }
+    }
+
+    /**
+     * Get the {@link QuandaryBoard}.
+     *
+     * @return The {@link QuandaryBoard} object.
+     */
+    public QuandaryBoard getQuandaryBoard() {
+        return quandaryBoard;
+    }
+
+    /**
+     * Get the current {@link Player}.
+     *
+     * @return The current {@link Player}.
+     */
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    /**
+     * Get the currently selected {@link Pawn}.
+     *
+     * @return The selected {@link Pawn}.
+     */
+    public Pawn getSelectedPawn() {
+        return selectedPawn;
     }
 
     /**
@@ -132,12 +164,14 @@ public class QuandarySim extends BaseSim {
         boolean moved = false;
 
         if (availableMoves.contains(coords)) {
+            gameRecorder.saveMove(coords);
             selectedPawn.setCoords(coords);
             selectedPawn.setPos(quandaryBoard.getPosFromCoords(coords));
             checkVictory(coords);
             toggleTurn();
             checkMoveLock();
             deselect();
+            possibleDraw = false;
             moved = true;
         }
 
@@ -153,22 +187,29 @@ public class QuandarySim extends BaseSim {
     /**
      * Check if either {@link Player} has managed to get a {@link Pawn} to the opposite side of the board.
      * <p>
-     * If so, activate the DIPLAY_WINNER {@link Modal}.
+     * If so, activate the DIPLAY_WINNER {@link Modal}, export the recorded game to file and get ready to record a new
+     * game.
      *
      * @param coords The board coordinates of the most recently moved {@link Pawn}.
      */
     private void checkVictory(Point coords) {
+        Player winner = null;
+
         if (currentPlayer.equals(Player.ONE) && coords.y == quandaryBoard.getSize() - 1) {
-            displayWinner.setBodyText(Player.ONE.getName() + " Wins!");
-            displayWinner.setVisible(true);
-            activeModal = displayWinner;
-            state = State.MODAL;
+            winner = Player.ONE;
         }
         if (currentPlayer.equals(Player.TWO) && coords.y == 0) {
-            displayWinner.setBodyText(Player.TWO.getName() + " Wins!");
-            displayWinner.setVisible(true);
-            activeModal = displayWinner;
+            winner = Player.TWO;
+        }
+
+        if (winner != null) {
+            endGame.setBodyText(winner.getName() + " Wins!");
+            endGame.setVisible(true);
+            activeModal = endGame;
             state = State.MODAL;
+            gameRecorder.setWinner(winner);
+            gameRecorder.export();
+            gameRecorder.reset();
         }
     }
 
@@ -208,9 +249,18 @@ public class QuandarySim extends BaseSim {
         }
 
         if (noMoves) {
-            skipTurn.setVisible(true);
-            activeModal = skipTurn;
-            state = State.MODAL;
+            if (possibleDraw) {
+                gameRecorder.reset();
+                endGame.setVisible(true);
+                endGame.setBodyText("No moves available, the game is a draw.");
+                activeModal = endGame;
+                state = State.MODAL;
+            } else {
+                skipTurn.setVisible(true);
+                activeModal = skipTurn;
+                state = State.MODAL;
+                possibleDraw = true;
+            }
         }
     }
 
@@ -224,7 +274,7 @@ public class QuandarySim extends BaseSim {
             case SKIP_TURN:
                 handleSkipTurnModal(pos);
                 break;
-            case DISPLAY_WINNER:
+            case END_GAME:
                 handleDisplayWinnerModal(pos);
                 break;
         }
@@ -259,7 +309,7 @@ public class QuandarySim extends BaseSim {
     }
 
     /**
-     * Handle a click on the DISPLAY_WINNER {@link Modal}.
+     * Handle a click on the END_GAME {@link Modal}.
      *
      * @param pos The position of the mouse click event.
      */
@@ -278,11 +328,11 @@ public class QuandarySim extends BaseSim {
     }
 
     /**
-     * Start a new game and deactivate the DISPLAY_WINNER {@link Modal}.
+     * Start a new game and deactivate the END_GAME {@link Modal}.
      */
     private void newGame() {
         activeModal = null;
-        displayWinner.setVisible(false);
+        endGame.setVisible(false);
         state = State.SELECTING_PAWN;
         initSim();
     }
@@ -365,7 +415,7 @@ public class QuandarySim extends BaseSim {
     private void deselect() {
         selectedPawn = null;
         resetHighlights();
-        availableMoves = new ArrayList<Point>();
+        availableMoves = new ArrayList<>();
         highlightAvailablePawns();
     }
 
@@ -387,7 +437,7 @@ public class QuandarySim extends BaseSim {
         for (Highlight highlight : visibleHighlights) {
             highlight.setVisible(false);
         }
-        visibleHighlights = new ArrayList<Highlight>();
+        visibleHighlights = new ArrayList<>();
     }
 
     /**
@@ -403,7 +453,7 @@ public class QuandarySim extends BaseSim {
         }
 
         Set<Sprite> sprites = quandaryBoard.getChildren().get(ChildSpriteType.PAWN);
-        Set<SquareColor> allowedColors = new HashSet<SquareColor>();
+        Set<SquareColor> allowedColors = new HashSet<>();
 
         if (sprites != null && !sprites.isEmpty()) {
             for (Sprite s : sprites) {
